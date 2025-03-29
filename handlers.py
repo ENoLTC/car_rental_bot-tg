@@ -3,6 +3,7 @@ from aiogram.types import ReplyKeyboardRemove, InlineKeyboardMarkup
 from config import ADMIN_CHAT_ID
 from keyboards import car_keyboard, time_keyboard, hours_keyboard, agree_disagree_keyboard
 import os
+import re
 
 # Хранилище данных пользователя
 user_data = {}
@@ -25,11 +26,23 @@ async def full_day(message: types.Message):
 async def hourly_rental(message: types.Message):
     await message.answer("Выберите количество часов аренды:", reply_markup=hours_keyboard)
 
-# Шаг 5: Выбор интервала времени по часам
 async def choose_hours(message: types.Message):
-    user_data[message.from_user.id]["time"] = message.text
-    await message.answer("Вы выбрали аренду на: " + message.text, reply_markup=ReplyKeyboardRemove())
-    await send_rental_rules(message)
+  try:
+    # Используем регулярку для извлечения первого числа из текста
+    match = re.search(r"\d+", message.text)
+    if match:
+      hours = int(match.group())  # Преобразуем найденное число в int
+
+      if 1 <= hours <= 23:
+        user_data[message.from_user.id]["time"] = f"{hours} часов"
+        await message.answer(f"Вы выбрали аренду на {hours} часов.", reply_markup=ReplyKeyboardRemove())
+        await send_rental_rules(message)  # Переход на следующий шаг
+      else:
+        await message.answer("Пожалуйста, выберите от 1 до 23 часов.")
+    else:
+      await message.answer("❗ Не удалось определить количество часов. Выберите время кнопками.")
+  except ValueError:
+    await message.answer("❗ Ошибка при обработке данных. Выберите время кнопками.")
 
 # Шаг 6: Отправка правил аренды и запрос согласия
 async def send_rental_rules(message: types.Message):
@@ -103,6 +116,6 @@ def register_handlers(dp):
     dp.register_message_handler(choose_car, lambda message: message.text in ["🚗 Эконом", "🚙 Комфорт", "🚘 Бизнес"])
     dp.register_message_handler(full_day, lambda message: message.text == "🕒 Весь день")
     dp.register_message_handler(hourly_rental, lambda message: message.text == "⏰ Почасовая аренда")
-    dp.register_message_handler(choose_hours, lambda message: message.text in ["1 час", "2 часа", "3 часа", "4 часа", "5+ часов"])
+    dp.register_message_handler(choose_hours, lambda message: message.text.endswith("час") or message.text.endswith("часов"))
     dp.register_message_handler(handle_agreement, lambda message: message.text in ["✅ Согласен", "❌ Не согласен"])
     dp.register_message_handler(get_license_photo, content_types=types.ContentType.PHOTO)
