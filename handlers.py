@@ -50,7 +50,7 @@ async def send_rental_rules(message: types.Message):
     if "rules_sent" not in user_data.get(message.from_user.id, {}):
         user_data[message.from_user.id]["rules_sent"] = True
         await message.answer(
-            "Пожалуйста, ознакомьтесь с правилами аренды: ...\n\nВы согласны с ними?",
+            "Пожалуйста, ознакомьтесь с правилами аренды: https://popeyes-prod.s3.eu-west-1.amazonaws.com/Nutricional_alergenos_Ed_00_Octubre_2021.pdf\n\nВы согласны с ними?",
             reply_markup=agree_disagree_keyboard
         )
 
