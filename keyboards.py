@@ -1,34 +1,19 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 # Клавиатура выбора авто
-car_keyboard = ReplyKeyboardMarkup(
-    keyboard=[
-        [KeyboardButton(text="🚗 Эконом"), KeyboardButton(text="🚙 Комфорт"), KeyboardButton(text="🚘 Бизнес")]
-    ],
-    resize_keyboard=True
-)
+car_keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
+car_keyboard.add(KeyboardButton("🚗 Эконом"), KeyboardButton("🚙 Комфорт"), KeyboardButton("🚘 Бизнес"))
 
-# Клавиатура выбора времени
-time_keyboard = ReplyKeyboardMarkup(
-    keyboard=[
-        [KeyboardButton(text="🕒 Весь день"), KeyboardButton(text="⏰ Почасовая аренда")]
-    ],
-    resize_keyboard=True
-)
+# Клавиатура выбора времени аренды
+time_keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
+time_keyboard.add(KeyboardButton("🕒 Весь день"), KeyboardButton("⏰ Почасовая аренда"))
 
-# Клавиатура выбора почасового интервала
-hours_keyboard = ReplyKeyboardMarkup(
-    keyboard=[
-        [KeyboardButton(text="1 час"), KeyboardButton(text="2 часа"), KeyboardButton(text="3 часа")],
-        [KeyboardButton(text="4 часа"), KeyboardButton(text="5 часов"), KeyboardButton(text="6 часов")]
-    ],
-    resize_keyboard=True
-)
+# Клавиатура для выбора интервала времени в часах
+hours_keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
+for i in range(1, 25):  # Кнопки с интервалом от 1 до 24 часов
+    hours_keyboard.add(KeyboardButton(f"⏰ {i} часов"))
 
-# Клавиатура подтверждения правил
-confirm_keyboard = ReplyKeyboardMarkup(
-    keyboard=[
-        [KeyboardButton(text="✅ Согласен"), KeyboardButton(text="❌ Не согласен")]
-    ],
-    resize_keyboard=True
-)
+# Клавиатура для согласия с правилами аренды
+agree_disagree_keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
+agree_disagree_keyboard.add(KeyboardButton("✅ Согласен"), KeyboardButton("❌ Не согласен"))
